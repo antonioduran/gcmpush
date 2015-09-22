@@ -26,6 +26,7 @@ import com.google.gson.Gson;
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollFunction;
 import org.appcelerator.kroll.KrollModule;
+import org.appcelerator.kroll.KrollRuntime;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.titanium.TiApplication;
@@ -40,6 +41,7 @@ public class GCMModule extends KrollModule {
     private static final String LCAT = "GCMModule";
 
     private static GCMModule instance = null;
+    private static AppStateListener appStateListener = null;
 
     /* Callbacks for push notifications */
     private KrollFunction successCallback = null;
@@ -58,6 +60,23 @@ public class GCMModule extends KrollModule {
     public GCMModule() {
         super();
         instance = this;
+
+        if (appStateListener == null) {
+            appStateListener = new AppStateListener();
+            TiApplication.addActivityTransitionListener(appStateListener);
+        }
+    }
+
+    public boolean isInForeground() {
+        if (!KrollRuntime.isInitialized()) {
+            return false;
+        }
+
+        if (AppStateListener.oneActivityIsResumed) {
+            return true;
+        }
+
+        return false;
     }
 
     @Kroll.method

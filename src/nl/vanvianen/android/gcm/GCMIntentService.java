@@ -285,6 +285,21 @@ public class GCMIntentService extends GCMBaseIntentService {
         Log.i(LCAT, "Message: " + message);
         Log.i(LCAT, "Ticker: " + ticker);
 
+        /* Check for app state */
+        GCMModule module = GCMModule.getInstance();
+        if (module != null) {
+            if (isTopic) {
+                module.sendTopicMessage(data);
+            } else {
+                module.sendMessage(data);
+            }
+
+            if (module.isInForeground()) {
+                Log.d(LCAT, "Notification received in foreground, no need for notification.");
+                return;
+            }
+        }
+
         if (message == null) {
             Log.d(LCAT, "Message received but no 'message' specified in push notification payload, so will make this silent");
         } else {
@@ -368,14 +383,6 @@ public class GCMIntentService extends GCMBaseIntentService {
             notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
             ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(1, notification);
-        }
-
-        if (GCMModule.getInstance() != null) {
-            if (isTopic) {
-                GCMModule.getInstance().sendTopicMessage(data);
-            } else {
-                GCMModule.getInstance().sendMessage(data);
-            }
         }
     }
 
