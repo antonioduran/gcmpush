@@ -19,6 +19,7 @@ gcm.registerPush({
 		insistent: true,  /* Whether the notification should be insistent */
 		group: 'MyNotificationGroup',  /* Name of group to group similar notifications together */
         localOnly: false,  /* Whether this notification should be bridged to other devices */
+		backgroundOnly: false,  /* Whether this notification only pops up while app is in background/not running */
         priority: +2,  /* Notification priority, from -2 to +2 */
         /* You can customize the key name of the title, message, and ticker values if you don't have control over how the notification is sent */
         titleKey: 'title',
@@ -38,21 +39,29 @@ gcm.registerPush({
 		alert(event.error);
 	},
 	callback: function (event) {
-		Ti.API.info("Push callback = " + JSON.stringify(event));
-		/* Called when a notification is received and the app is in the foreground */
-		
-		var dialog = Ti.UI.createAlertDialog({
-			title: 'Push received',
-			message: JSON.stringify(event.data),
-			buttonNames: ['View','Cancel'],
-			cancel: 1
-		});
-		dialog.addEventListener("click", function(event) {
-			dialog.hide();
-			if (event.index == 0) {
-				/* Do stuff to view the notification */
-			}
-		});
-		dialog.show();			       
+		if (event.inBackground) {
+			Ti.API.info("Push callback (background) = " + JSON.stringify(event));
+			/* Called when a notification is received and the app is in the background (once app starts up) */
+
+			/* Do stuff to view the notification */
+		}
+		else {
+			Ti.API.info("Push callback (foreground) = " + JSON.stringify(event));
+			/* Called when a notification is received and the app is in the foreground */
+
+			var dialog = Ti.UI.createAlertDialog({
+				title: 'Push received',
+				message: JSON.stringify(event.data),
+				buttonNames: ['View','Cancel'],
+				cancel: 1
+			});
+			dialog.addEventListener("click", function(event) {
+				dialog.hide();
+				if (event.index == 0) {
+					/* Do stuff to view the notification */
+				}
+			});
+			dialog.show();
+		}
 	}
 });

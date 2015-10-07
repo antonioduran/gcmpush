@@ -71,6 +71,7 @@ See the [example](https://github.com/morinel/gcmpush/blob/master/example/app.js)
 1. **insistent** (true / false): whether the notification should be [insistent](http://developer.android.com/reference/android/app/Notification.html#FLAG_INSISTENT), default false.
 1. **group**: name of group to group similar notifications together, default null.
 1. **localOnly** (true / false): whether this notification should be bridged to other devices (false) or is only relevant to this device (true), default true.
+1. **backgroundOnly** (true / false): whether to create device notifications only while the app is in the background/not running; you will still receive the callback if the app is backgrounded
 1. **priority**: (integer) specifies the priority of the notification, should be between [PRIORITY_MIN](http://developer.android.com/reference/android/support/v4/app/NotificationCompat.html#PRIORITY_MIN) and [PRIORITY_MAX](http://developer.android.com/reference/android/support/v4/app/NotificationCompat.html#PRIORITY_MAX), default 0.
 1. **titleKey** (string): specify a custom key name for the notification title sent by the server
 1. **messageKey** (string): specify a custom key name for the notification message sent by the server

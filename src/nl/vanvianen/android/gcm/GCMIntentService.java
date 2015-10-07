@@ -131,6 +131,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         String group = null;
         boolean localOnly = true;
         int priority = 0;
+        boolean backgroundOnly = false;
         String titleKey = "title";
         String messageKey = "message";
         String tickerKey = "ticker";
@@ -199,6 +200,14 @@ public class GCMIntentService extends GCMBaseIntentService {
                     priority = ((Double) notificationSettings.get("priority")).intValue();
                 } else {
                     Log.e(LCAT, "Invalid setting priority, should be an integer, between PRIORITY_MIN (" + NotificationCompat.PRIORITY_MIN + ") and PRIORITY_MAX (" + NotificationCompat.PRIORITY_MAX + ")");
+                }
+            }
+
+            if (notificationSettings.get("backgroundOnly") != null) {
+                if (notificationSettings.get("backgroundOnly") instanceof Boolean) {
+                    backgroundOnly = (Boolean) notificationSettings.get("backgroundOnly");
+                } else {
+                    Log.e(LCAT, "Invalid setting backgroundOnly, should be boolean");
                 }
             }
 
@@ -294,7 +303,7 @@ public class GCMIntentService extends GCMBaseIntentService {
                 module.sendMessage(data);
             }
 
-            if (module.isInForeground()) {
+            if (backgroundOnly && module.isInForeground()) {
                 Log.d(LCAT, "Notification received in foreground, no need for notification.");
                 return;
             }

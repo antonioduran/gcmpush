@@ -68,15 +68,7 @@ public class GCMModule extends KrollModule {
     }
 
     public boolean isInForeground() {
-        if (!KrollRuntime.isInitialized()) {
-            return false;
-        }
-
-        if (AppStateListener.oneActivityIsResumed) {
-            return true;
-        }
-
-        return false;
+        return AppStateListener.oneActivityIsResumed;
     }
 
     @Kroll.method
@@ -292,6 +284,7 @@ public class GCMModule extends KrollModule {
         if (messageCallback != null) {
             HashMap<String, Object> data = new HashMap<String, Object>();
             data.put("data", messageData);
+            data.put("inBackground", !isInForeground());
 
             messageCallback.call(getKrollObject(), data);
         } else {
@@ -303,6 +296,7 @@ public class GCMModule extends KrollModule {
         if (topicCallback != null) {
             HashMap<String, Object> data = new HashMap<String, Object>();
             data.put("data", messageData);
+            data.put("inBackground", !isInForeground());
 
             topicCallback.call(getKrollObject(), data);
         } else {
