@@ -27,7 +27,10 @@ gcm.registerPush({
 		// ticker: ''
 		/* Add LED flashing */
 		ledOn: 200,
-		ledOff: 300
+		ledOff: 300,
+		// Set channelId for Android O
+		channelId: 'my_channel',
+		channelName: 'My-Channel'
 	},
 	success: function (event) {
 		Ti.API.info("Push registration success: " + JSON.stringify(event));
